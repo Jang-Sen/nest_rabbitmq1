@@ -1,0 +1,69 @@
+services:
+  product:
+    container_name: product_ex1
+    build:
+      context: products
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./products:/usr/src/products
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
+    networks:
+      - networks
+
+  customer:
+    container_name: customer_ex1
+    build:
+      context: customers
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./customers:/usr/src/customers
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - networks
+
+  order:
+    container_name: order_ex1
+    build:
+      context: orders
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./orders:/usr/src/orders
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+    networks:
+      - networks
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    networks:
+      - networks
+
+networks:
+  networks:
+    driver: bridge
